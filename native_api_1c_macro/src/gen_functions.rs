@@ -305,7 +305,10 @@ pub fn func_call_tkn(
         quote! {
             #pre_call
             let call_result = (self.#func_ident)(#func_call);
-            let Ok(call_result) = call_result else { return false; };
+            let Ok(call_result) = call_result else { 
+                self.set_last_error(call_result.err().unwrap());
+                return false;
+            };
             #post_call
         }
     }
