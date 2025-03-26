@@ -165,14 +165,23 @@ fn build_impl_block(input: &DeriveInput) -> Result<proc_macro2::TokenStream, Tok
         }
 
         let mut this_get_param_def_value_body = quote! {};
+        let mut has_self_param = false;
         for (i, p) in func.params.iter().enumerate() {
+            if matches!(p.ty, ParamType::SelfType) {
+                has_self_param = true;
+            };
+            let mut param_index = i;
+            if has_self_param {
+                param_index = param_index.wrapping_sub(1);
+            };
+
             match &p.default {
                 Some(expr) => {
                     let value_setter =
                         param_ty_to_ffi_return(&p.ty, quote! { value }, expr.into_token_stream())?;
                     this_get_param_def_value_body = quote! {
                         #this_get_param_def_value_body
-                        if param_num == #i  {
+                        if param_num == #param_index  {
                             #value_setter;
                             return true;
                         }
