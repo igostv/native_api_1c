@@ -64,7 +64,7 @@ pub fn param_ty_to_ffi_return(
         ParamType::I32 => Ok(quote! { #target.set_i32(#source.into()) }),
         ParamType::F64 => Ok(quote! { #target.set_f64(#source.into()) }),
         ParamType::String => Ok(
-            quote! { #target.set_str(&native_api_1c::native_api_1c_core::ffi::string_utils::os_string_nil(String::from(#source.clone()).as_str())) },
+            quote! { #target.set_str(&native_api_1c::native_api_1c_core::ffi::string_utils::os_string(String::from(#source.clone()).as_str())) },
         ),
         ParamType::Date => Ok(quote! { #target.set_date(#source.into()) }),
         ParamType::Blob => Ok(quote! { #target.set_blob(&#source) }),
